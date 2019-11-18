@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.CmsCommentExtendMapper">
+
+  <select id="selectByArticleId" parameterType="long" resultMap="com.briup.apps.cms.dao.CmsCommentMapper.BaseResultMap">
+    select *
+    from cms_comment
+    where article_id=#{articleId,jdbcType=BIGINT} and status != '已删除'
+  </select>
+
+  <select id="selectByUserId" parameterType="long" resultMap="com.briup.apps.cms.dao.CmsCommentMapper.BaseResultMap">
+    select *
+    from cms_comment
+    where user_id=#{userId,jdbcType=BIGINT} and status != '已删除'
+  </select>
+
+  <update id="deleteByPrimaryKey" parameterType="long">
+    update cms_comment
+    set status='已删除'
+    where id=#{id}
+  </update>
+</mapper>

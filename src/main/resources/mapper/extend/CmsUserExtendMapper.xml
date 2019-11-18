@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.CmsUserExtendMapper">
+    <resultMap id="userExtendResultMap" extends="com.briup.apps.cms.dao.CmsUserMapper.BaseResultMap"
+               type="com.briup.apps.cms.bean.extend.CmsUserExtend">
+        <collection property="comments" column="id" select="com.briup.apps.cms.dao.extend.CmsCommentExtendMapper.selectByUserId"/>
+        <collection property="articleExtends" column="id" select="com.briup.apps.cms.dao.extend.CmsArticleExtendMapper.selectAllArticleByAuthorId"/>
+    </resultMap>
+
+    <resultMap id="userExtendResultMapWithUserRole" extends="com.briup.apps.cms.dao.CmsUserMapper.BaseResultMap"
+               type="com.briup.apps.cms.bean.extend.CmsUserExtend">
+        <collection property="userRoleExtends" column="id" select="com.briup.apps.cms.dao.extend.CmsUserRoleExtendMapper.selectByUserId"/>
+    </resultMap>
+
+    <resultMap id="baseUserExtendMapper" extends="com.briup.apps.cms.dao.CmsUserMapper.BaseResultMap"
+               type="com.briup.apps.cms.bean.extend.CmsUserExtend">
+        <collection property="roles" column="id" select="com.briup.apps.cms.dao.extend.CmsRoleExtendMapper.selectByUserId"/>
+        <collection property="privileges" column="id" select="com.briup.apps.cms.dao.extend.CmsPrivilegeExtendMapper.selectByUserId"/>
+    </resultMap>
+    <select id="selectByUserName" resultMap="com.briup.apps.cms.dao.CmsUserMapper.BaseResultMap">
+        select *
+        from cms_user
+        where username = #{userName,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllRoleByUserId" parameterType="long" resultMap="userExtendResultMapWithUserRole">
+        select *
+        from cms_user
+        where id = #{id}
+    </select>
+
+    <select id="selectById" parameterType="long" resultMap="baseUserExtendMapper">
+        select *
+        from cms_user
+        where id = #{id}
+    </select>
+</mapper>

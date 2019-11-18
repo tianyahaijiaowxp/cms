@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.CmsCategoryExtendMapper">
+  <resultMap id="categoryExtend" extends="com.briup.apps.cms.dao.CmsCategoryMapper.BaseResultMap"
+             type="com.briup.apps.cms.bean.extend.CmsCategoryExtend">
+    <association property="category" column="parent_id" select="com.briup.apps.cms.dao.CmsCategoryMapper.selectByPrimaryKey"/>
+    <collection property="categories" column="id" select="com.briup.apps.cms.dao.extend.CmsCategoryExtendMapper.selectByParentId"/>
+  </resultMap>
+
+  <resultMap id="categoryExtendWithArticle" extends="categoryExtend"
+             type="com.briup.apps.cms.bean.extend.CmsCategoryExtend">
+    <collection property="articleExtends" column="id" select="com.briup.apps.cms.dao.extend.CmsArticleExtendMapper.selectAllArticleByCategoryId"/>
+  </resultMap>
+
+  <select id="selectAll" resultMap="categoryExtend">
+    select * from cms_category
+  </select>
+
+  <select id="selectByParentId" parameterType="java.lang.Long" resultMap="com.briup.apps.cms.dao.CmsCategoryMapper.BaseResultMap">
+    select
+    *
+    from cms_category
+    where parent_id = #{parentId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByName" parameterType="string" resultMap="com.briup.apps.cms.dao.CmsCategoryMapper.BaseResultMap">
+    select
+      *
+    from cms_category
+    where name = #{name,jdbcType=BIGINT}
+  </select>
+</mapper>

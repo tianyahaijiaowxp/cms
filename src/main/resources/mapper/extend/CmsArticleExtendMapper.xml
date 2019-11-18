@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.CmsArticleExtendMapper">
+  <resultMap id="articleExtendResultMap" type="com.briup.apps.cms.bean.extend.CmsArticleExtend"
+             extends="com.briup.apps.cms.dao.CmsArticleMapper.ResultMapWithBLOBs">
+    <association property="category" column="category_id" select="com.briup.apps.cms.dao.CmsCategoryMapper.selectByPrimaryKey"/>
+    <collection property="comments" column="id" select="com.briup.apps.cms.dao.extend.CmsCommentExtendMapper.selectByArticleId"/>
+  </resultMap>
+
+  <select id="selectAll" resultMap="articleExtendResultMap">
+    select * from cms_article
+  </select>
+
+  <select id="selectAllSimple" resultMap="com.briup.apps.cms.dao.CmsArticleMapper.ResultMapWithBLOBs">
+    select * from cms_article
+  </select>
+  
+  <select id="selectById" parameterType="long" resultMap="articleExtendResultMap">
+    select * from cms_article
+    where id=#{id,jdbcType=BIGINT} and status != '已删除'
+  </select>
+
+  <select id="selectByTitle" parameterType="string" resultMap="com.briup.apps.cms.dao.CmsArticleMapper.ResultMapWithBLOBs">
+    select * from cms_article
+    where title=#{title,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByArticleStatus" parameterType="string" resultMap="com.briup.apps.cms.dao.CmsArticleMapper.BaseResultMap">
+    select *
+    from cms_article
+    where status = #{status,jdbcType=VARCHAR} and status != '已删除'
+  </select>
+
+  <select id="selectAllArticleByAuthorId" parameterType="long" resultMap="articleExtendResultMap">
+    select *
+    from cms_article
+    where author_id = #{authorId} and status != '已删除'
+  </select>
+
+  <select id="selectArticleByCondition" parameterType="com.briup.apps.cms.bean.condition.ArticleCondition"
+          resultMap="articleExtendResultMap">
+    select * from cms_article
+    <where>
+      <if test="status != null and status != ''">
+        and status=#{status}
+      </if>
+      <if test="title != null and title != ''">
+        and title = #{title}
+      </if>
+      <if test="authorId != null">
+        and title = #{authorId}
+      </if>
+      <if test="categoryId != null">
+        and title = #{categoryId}
+      </if>
+    </where> and status != '已删除'
+  </select>
+
+  <select id="selectAllArticleByCategoryId" parameterType="long" resultMap="articleExtendResultMap">
+    select *
+    from cms_article
+    where category_id = #{categoryId} and status != '已删除'
+  </select>
+
+  <update id="deleteArticleByPrimaryKey" parameterType="long">
+    update cms_article
+    set status='已删除'
+    where id = #{id}
+  </update>
+</mapper>
